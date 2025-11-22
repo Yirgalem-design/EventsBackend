@@ -2,13 +2,11 @@ const express = require("express");
 const router = express.Router();
 const pool = require("../db");
 
-// GET all events
 router.get("/", async (req, res) => {
   const result = await pool.query("SELECT * FROM events ORDER BY id DESC");
   res.json(result.rows);
 });
 
-// CREATE event
 router.post("/", async (req, res) => {
   const { title, description, date, time, location } = req.body;
   const result = await pool.query(
@@ -18,7 +16,6 @@ router.post("/", async (req, res) => {
   res.json(result.rows[0]);
 });
 
-// UPDATE event
 router.put("/:id", async (req, res) => {
   const { id } = req.params;
   const { title, description, date, time, location } = req.body;
@@ -30,14 +27,12 @@ router.put("/:id", async (req, res) => {
   res.json(result.rows[0]);
 });
 
-// DELETE event
 router.delete("/:id", async (req, res) => {
   const { id } = req.params;
   await pool.query("DELETE FROM events WHERE id=$1", [id]);
   res.json({ message: "Event deleted" });
 });
 
-// RSVP to event (increase attendees)
 router.post("/:id/rsvp", async (req, res) => {
   const { id } = req.params;
   const result = await pool.query(
